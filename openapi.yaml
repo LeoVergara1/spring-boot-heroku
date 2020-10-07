@@ -1,0 +1,178 @@
+swagger: "2.0"
+info:
+  description: "Documentación oficial del Core, módulo NombreAppp Payment Más Nómina"
+  title: "NombreAppp Payment Más Nómina"
+  version: "1.0.0"
+host: "mn-msk-nombreApp-payment.endpoints.findep-desarrollo-170215.cloud.goog"
+x-google-endpoints:
+  - name: "mn-msk-nombreApp-payment.endpoints.findep-desarrollo-170215.cloud.goog"
+    target: "35.225.20.109" #Cambiar Se obtiene de la carga de trabajo de la app mn-nombreApp-payment (LoadBalancer)
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+schemes:
+  # Uncomment the next line if you configure SSL for this API.
+  # - "https"
+  - "http"
+paths:
+  "/msk/mn-nombreApp-payment/health/healthForceRestart":
+    put:
+      description: "Forza el reinicio del contenedor"
+      operationId: "healthForceRestart"
+      responses:
+        200:
+          description: "Generico"
+          schema:
+            $ref: "#/definitions/objetoGenerico"
+      security:
+        - api_key: []
+  "/msk/mn-nombreApp-payment/nombreApppayment":
+    post:
+      description: "Aplicar nombreApp payment contrato"
+      operationId: "nombreAppPaymentContrato"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: requestJSON
+          description: requestJSON
+          required: true
+          schema:
+            $ref: "#/definitions/PeticionNombreApppPaymentDTO"
+      responses:
+        200:
+          description: "JSON indicando la status de la operación"
+          schema:
+            $ref: "#/definitions/objetoGenerico"
+      security:
+        - api_key: []
+  "/msk/mn-nombreApp-payment/nombreApppayment/corresponsal":
+    post:
+      description: "Aplicar nombreApp payment corresponsal"
+      operationId: "nombreAppPaymentCorresponsal"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: requestJSON
+          description: requestJSON
+          required: true
+          schema:
+            $ref: "#/definitions/PeticionDTO"
+      responses:
+        200:
+          description: "JSON indicando la status de la operación"
+          schema:
+            $ref: "#/definitions/objetoGenerico"
+      security:
+        - api_key: []
+  "/auth/info/googlejwt":
+    get:
+      description: "Returns the requests' authentication information."
+      operationId: "auth_info_google_jwt"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Authenication info."
+          schema:
+            $ref: "#/definitions/authInfoResponse"
+      security:
+        - api_key: []
+          google_jwt: []
+  "/auth/info/googleidtoken":
+    get:
+      description: "Returns the requests' authentication information."
+      operationId: "authInfoGoogleIdToken"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Authenication info."
+          schema:
+            $ref: "#/definitions/authInfoResponse"
+      security:
+        - api_key: []
+          google_id_token: []
+definitions:
+  objetoGenerico:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  authInfoResponse:
+    properties:
+      id:
+        type: "string"
+      email:
+        type: "string"
+  HeaderDTO:
+    type: object
+    description: "Estructura de objeto de encabezado en los requets"
+    properties:
+      idOperador:
+        type: string
+      fechaOperacion:
+        type: string
+      idOperacionCaja:
+        type: integer
+  NombreApppPaymentDTO:
+    type: object
+    description: "Objeto para nombreApp payment contrato"
+    properties:
+      idContrato:
+        type: string
+      numeroSaltos:
+        type: integer
+  PeticionNombreApppPaymentDTO:
+    type: object
+    description: "Objeto para nombreApp payment contrato"
+    properties:
+      header:
+        $ref: "#/definitions/HeaderDTO"
+      nombreAppPayment:
+        $ref: "#/definitions/NombreApppPaymentDTO"
+  PeticionDTO:
+    type: object
+    description: "Objeto para nombreApp payment corresponsal"
+    properties:
+      header:
+        $ref: "#/definitions/HeaderDTO"
+
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: "apiKey"
+    name: "key"
+    in: "query"
+  # This section configures authentication using Google API Service Accounts
+  # to sign a json web token. This is mostly used for server-to-server
+  # communication.
+  google_jwt:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    # This must match the 'iss' field in the JWT.
+    x-google-issuer: "jwt-client.endpoints.sample.google.com"
+    # Update this with your service account's email address.
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/YOUR-SERVICE-ACCOUNT-EMAIL"
+    # This must match the "aud" field in the JWT. You can add multiple
+    # audiences to accept JWTs from multiple clients.
+    x-google-audiences: "echo.endpoints.sample.google.com"
+  # This section configures authentication using Google OAuth2 ID Tokens.
+  # ID Tokens can be obtained using OAuth2 clients, and can be used to access
+  # your API on behalf of a particular user.
+  google_id_token:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v3/certs"
+    # Your OAuth2 client's Client ID must be added here. You can add
+    # multiple client IDs to accept tokens from multiple clients.
+    x-google-audiences: "YOUR-CLIENT-ID"

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mn-nombreappp-payment-balancer #Nombre del SERVICE
+  namespace: masnomina-services #Se deja DEFAULT , se tiene que cambiar despues
+  labels:
+    app: mn-nombreappp-payment #Nombre de la Imagen Generado en Docker
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8085
+      protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: mn-nombreappp-payment #Nombre de la Imagen Generado en Docker

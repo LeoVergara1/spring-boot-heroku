@@ -1,0 +1,66 @@
+apiVersion: apps/v1 #Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: mn-nombreApp-payment-service #Nombre del DEPLOYMENT
+  namespace: masnomina-services #Se deja DEFAULT , se tiene que cambiar despues
+  labels:
+    app: mn-nombreApp-payment #Nombre de la Imagen Generado en Docker
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: mn-nombreApp-payment #Nombre de la Imagen Generado en Docker
+  template:
+    metadata:
+      labels:
+        app: mn-nombreApp-payment #Nombre de la Apps
+    spec:
+      containers:
+        - name: esp
+          image: gcr.io/endpoints-release/endpoints-runtime:1
+          args: [
+              "--http_port=8081",
+              "--backend=127.0.0.1:8085", #Puerto del Dockerfile EXPOSE , del properties o Yaml de la aplicacion
+              "--service=mn-msk-nombreApp-payment.endpoints.findep-desarrollo-170215.cloud.goog",
+              "--rollout_strategy=managed",
+            ]
+          ports:
+            - containerPort: 8081
+        - name: mn-nombreApp-payment #Nombre del Apps
+          image: gcr.io/findep-desarrollo-170215/mn-nombreApp-payment:1.0.0 #{PROJECT_ID}/Imagen Docker con Version {tag}
+          livenessProbe:
+            httpGet:
+              path: /msk/mn-nombreApp-payment/health/healthCheck #Servicio Rest del proyecto
+              port: 8085 #Puerto del DockerFile EXPOSE , del properties o Yaml del aplicacion
+            initialDelaySeconds: 60
+            periodSeconds: 60
+          ports:
+            - containerPort: 8085 #Puerto del Dockerfile EXPOSE , del properties o Yaml de la aplicacion
+          env:
+            #kubectl create secret generic mn-credentials-nombreApp-payment --from-env-file=./secrets.txt --namespace={}
+            - name: DB_SYB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mn-credentials-nombreApp-payment #kubectl create secret generic mn-credentials-nombreApp-payment
+                  key: datasource.findep.sybase.name
+            - name: DB_SYB_IP
+              valueFrom:
+                secretKeyRef:
+                  name: mn-credentials-nombreApp-payment #kubectl create secret generic mn-credentials-nombreApp-payment
+                  key: datasource.findep.sybase.ip
+            - name: DB_SYB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: mn-credentials-nombreApp-payment #kubectl create secret generic mn-credentials-nombreApp-payment
+                  key: datasource.findep.sybase.port
+            - name: DB_SYB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mn-credentials-nombreApp-payment #kubectl create secret generic mn-credentials-nombreApp-payment
+                  key: datasource.findep.sybase.user
+            - name: DB_SYB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mn-credentials-nombreApp-payment #kubectl create secret generic mn-credentials-nombreApp-payment
+                  key: datasource.findep.sybase.password
+

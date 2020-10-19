@@ -22,4 +22,10 @@ class NegotiationRepositorySpec extends Specification {
       assert negotiationRepository
   }
 
+  def "Spect 1 get all negotiations"() {
+    when:
+      def list =  negotiationRepository.findAll()
+    then:
+      assert list
+  }
 }

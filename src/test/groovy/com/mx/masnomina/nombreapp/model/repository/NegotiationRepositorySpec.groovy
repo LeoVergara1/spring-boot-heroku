@@ -10,6 +10,7 @@ import spock.lang.Ignore
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
+//@TestPropertySource("classpath:application-test.properties")
 class NegotiationRepositorySpec extends Specification {
 
 	@Autowired

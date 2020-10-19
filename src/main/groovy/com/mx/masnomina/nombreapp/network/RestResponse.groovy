@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * 
  */
 @XmlRootElement
-@XmlSeeAlso({ Object.class })
+@XmlSeeAlso([Object.class ])
 public class RestResponse<T> {
 
 	private boolean successful;

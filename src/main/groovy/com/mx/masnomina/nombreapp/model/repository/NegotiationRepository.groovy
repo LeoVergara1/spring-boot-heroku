@@ -10,4 +10,5 @@ public interface NegotiationRepository extends CrudRepository<Negotiation, Integ
 	List<Negotiation> findAll()
 	List<Negotiation> findAllByFechaPromesaLessThan(Date fechaPromesa)
 	List<Negotiation> findAllByFechaPromesaLessThanAndEstatusNegociacion(Date fechaPromesa, StatusNegotiation statusNegotiation)
+	List<Negotiation> findByContrato(String contrato)
 }

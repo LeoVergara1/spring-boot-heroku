@@ -7,7 +7,8 @@ import java.time.LocalTime
 @Table(name = "negociaciones", schema = "serv_mn_negociaciones")
 class Negotiation {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_negociacion_test")
+	@SequenceGenerator(sequenceName = "seq_negociacion_test", allocationSize = 1, name = "seq_negociacion_test")
   @Column(name = "id_negociaciones")
 	Integer id
   @Column(name = "contrato")

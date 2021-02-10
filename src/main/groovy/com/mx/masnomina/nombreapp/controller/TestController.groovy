@@ -8,6 +8,6 @@ class TestController {
 
   @GetMapping
   String getMessage(){
-    return "Hellor word from heroku"
+    return "Hellor word from heroku 1.0"
   }
 }
